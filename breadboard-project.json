@@ -1,0 +1,326 @@
+{
+  "format": "velxio-project",
+  "version": 1,
+  "boards": [
+    {
+      "id": "esp32",
+      "boardKind": "esp32",
+      "x": 389.07983980795626,
+      "y": -312.8662813212131,
+      "activeFileGroupId": "group-esp32",
+      "languageMode": "arduino",
+      "serialBaudRate": 0
+    }
+  ],
+  "fileGroups": {
+    "group-esp32": [
+      {
+        "name": "sketch.ino",
+        "content": "// AeroPuff\r\n#include <Wire.h>\r\n#include <Adafruit_GFX.h>\r\n#include <Adafruit_SSD1306.h>\r\n\r\n#define SCREEN_WIDTH 128\r\n#define SCREEN_HEIGHT 64\r\n#define OLED_RESET -1\r\nAdafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT , &Wire , OLED_RESET)\r\n\r\n//On va definiiir les broches \r\nconst int BTN_NEXT = 14;\r\nconst int BTN_PREV = 12;\r\nconst int DHT_PIN = 4;\r\n\r\n//Laaaa machine d etat \r\nenum Mode `{ ACCEUIL , CLIMAT_INTERIEUR , CONSEIL };\r\nMode modeActuel = ACCEUIL;\r\n\r\n//Variableeee\r\nfloat tempSimulee = 22.5;\r\nfloat humSimulee = 55.0;\r\n\r\nvoid setup() {\r\n  Serial.begin(115200);\r\n\r\npinMode(BTN_NEXT, INPUT_PULLUP);\r\npinMode(BTN_PREV, INPUT_PULLUP);\r\n\r\nif(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { \r\n    Serial.println(F(\"Erreur : Ecran OLED non detecte\"));\r\n    for(;;);\r\n  }\r\n  \r\n  display.clearDisplay();\r\n  display.setTextColor(SSD1306_WHITE);\r\n  display.setTextSize(1);\r\n  display.setCursor(10, 20);\r\n  display.println(\"Initialisation...\");\r\n  display.display();\r\n  delay(1000);\r\n}\r\n\r\nvoid loop() {\r\n  // Lecture non-bloquante des boutons (State Machine Inputs)\r\n  if (digitalRead(BTN_NEXT) == LOW) {\r\n    delay(200); // Anti-rebond\r\n    if (modeActuel == ACCUEIL) modeActuel = CLIMAT_INTERIEUR;\r\n    else if (modeActuel == CLIMAT_INTERIEUR) modeActuel = CONSEIL;\r\n    else modeActuel = ACCUEIL;\r\n  }\r\n  \r\n  if (digitalRead(BTN_PREV) == LOW) {\r\n    delay(200); // Anti-rebond\r\n    if (modeActuel == ACCUEIL) modeActuel = CONSEIL;\r\n    else if (modeActuel == CLIMAT_INTERIEUR) modeActuel = ACCUEIL;\r\n    else modeActuel = CLIMAT_INTERIEUR;\r\n  }\r\n\r\n//Mise a jour de mon affichage \r\ndisplay.clearDisplay();\r\ndisplay.setCursor( 0 , 0 );\r\n\r\nswitch(modeActuel) {\r\n case ACCEUIL:\r\n  display.setTextSize(1);\r\n  display.println(\"=====================================\");\r\n  display.println(\"        Welcome to AEROPUF !         \");\r\n  display.println(\"=====================================\");\r\n  display.println(\"\\n Click on any button  \");\r\n  display.println(\"  to naviguate ...  \");\r\n \r\n case CLIMAT_INTERIEUR:\r\n  display.setTextSize(1);\r\n  display.println(\"======== ANALYSE CLIMAT =========\");\r\n  display.println(\" \");\r\n  if (tempSimulee > 24.0) {\r\n  display.println(\"Statut : So Hot !\");\r\n  display.println(\"Advice: Open the   \");\r\n  display.println(\"  window  ...  \")\r\n  } else {\r\n  display.println(\"Statut : Comfortable\");\r\n  display.println(\"Advice: Everything is OK!\");   \r\n  }\r\n  break;\r\n }\r\n\r\ndisplay.display();\r\ndelay(50);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n}\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n}"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "ssd1306_i2c_1784041608864_pvbch2nqc",
+      "metadataId": "ssd1306-i2c",
+      "x": 120.3253198682911,
+      "y": -282.8794707335832,
+      "properties": {
+        "protocol": "i2c"
+      },
+      "attachedTo": {
+        "breadboardId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinMap": {
+          "GND": "TN4",
+          "VCC": "TN5",
+          "SCL": "TN6",
+          "SDA": "TN7"
+        }
+      }
+    },
+    {
+      "id": "breadboard_full_1784042096514_z2h8wsdo8",
+      "metadataId": "breadboard-full",
+      "x": 87.07472705700224,
+      "y": -662.8655066943134,
+      "properties": {}
+    },
+    {
+      "id": "pushbutton_1784042140655_cybha27ij",
+      "metadataId": "pushbutton",
+      "x": 249.18161762976683,
+      "y": -737.8821052858771,
+      "properties": {
+        "color": "red",
+        "pressed": false,
+        "label": "",
+        "xray": false
+      }
+    },
+    {
+      "id": "pushbutton_1784042148457_oog1wumry",
+      "metadataId": "pushbutton",
+      "x": 528.6627903640069,
+      "y": -736.7869576816413,
+      "properties": {
+        "color": "red",
+        "pressed": false,
+        "label": "",
+        "xray": false
+      }
+    },
+    {
+      "id": "dht11_1784041877067_ea4eyemsu",
+      "metadataId": "dht11",
+      "x": 608.6459017544943,
+      "y": -393.3125984446554,
+      "properties": {
+        "temperature": 25,
+        "humidity": 50
+      }
+    }
+  ],
+  "wires": [
+    {
+      "waypoints": [],
+      "id": "wire-1784047860352",
+      "start": {
+        "componentId": "esp32",
+        "pinName": "GND2",
+        "x": 523.0798398079562,
+        "y": -118.86628132121308
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BN1",
+        "x": 118.07472705700224,
+        "y": -455.86550669431335
+      },
+      "color": "#000000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784047886442",
+      "start": {
+        "componentId": "esp32",
+        "pinName": "3V3",
+        "x": 523.0798398079562,
+        "y": -105.86628132121308
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP2",
+        "x": 127.67472705700223,
+        "y": -468.86550669431335
+      },
+      "color": "#cc0000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784047932792",
+      "start": {
+        "componentId": "ssd1306_i2c_1784041608864_pvbch2nqc",
+        "pinName": "VCC",
+        "x": 196.3253198682911,
+        "y": -271.8794707335832
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP9",
+        "x": 194.87472705700225,
+        "y": -468.86550669431335
+      },
+      "color": "#cc0000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784047944703",
+      "start": {
+        "componentId": "ssd1306_i2c_1784041608864_pvbch2nqc",
+        "pinName": "GND",
+        "x": 186.3253198682911,
+        "y": -271.8794707335832
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BN8",
+        "x": 185.27472705700222,
+        "y": -455.86550669431335
+      },
+      "color": "#000000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784047975734",
+      "start": {
+        "componentId": "ssd1306_i2c_1784041608864_pvbch2nqc",
+        "pinName": "SDA",
+        "x": 216.3253198682911,
+        "y": -271.8794707335832
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP21",
+        "x": 310.07472705700224,
+        "y": -468.86550669431335
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784047987587",
+      "start": {
+        "componentId": "ssd1306_i2c_1784041608864_pvbch2nqc",
+        "pinName": "SCL",
+        "x": 206.3253198682911,
+        "y": -271.8794707335832
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP22",
+        "x": 319.6747270570022,
+        "y": -468.86550669431335
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048020701",
+      "start": {
+        "componentId": "dht11_1784041877067_ea4eyemsu",
+        "pinName": "GND",
+        "x": 682.6459017544943,
+        "y": -315.3125984446554
+      },
+      "end": {
+        "componentId": "dht11_1784041877067_ea4eyemsu",
+        "pinName": "GND",
+        "x": 682.6459017544943,
+        "y": -315.3125984446554
+      },
+      "color": "#000000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048033231",
+      "start": {
+        "componentId": "dht11_1784041877067_ea4eyemsu",
+        "pinName": "VCC",
+        "x": 632.6459017544943,
+        "y": -315.3125984446554
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP55",
+        "x": 636.4747270570022,
+        "y": -468.86550669431335
+      },
+      "color": "#cc0000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048054152",
+      "start": {
+        "componentId": "dht11_1784041877067_ea4eyemsu",
+        "pinName": "SDA",
+        "x": 657.6459017544943,
+        "y": -315.3125984446554
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BP4",
+        "x": 146.87472705700225,
+        "y": -468.86550669431335
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048063117",
+      "start": {
+        "componentId": "dht11_1784041877067_ea4eyemsu",
+        "pinName": "GND",
+        "x": 682.6459017544943,
+        "y": -315.3125984446554
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "BN60",
+        "x": 684.4747270570022,
+        "y": -455.86550669431335
+      },
+      "color": "#000000"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048153866",
+      "start": {
+        "componentId": "pushbutton_1784042140655_cybha27ij",
+        "pinName": "2.r",
+        "x": 322.18161762976683,
+        "y": -699.8821052858771
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "TN22",
+        "x": 319.6747270570022,
+        "y": -626.8655066943134
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048168675",
+      "start": {
+        "componentId": "pushbutton_1784042140655_cybha27ij",
+        "pinName": "1.l",
+        "x": 255.18161762976683,
+        "y": -718.8821052858771
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "TP14",
+        "x": 242.87472705700225,
+        "y": -639.8655066943134
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048179998",
+      "start": {
+        "componentId": "pushbutton_1784042148457_oog1wumry",
+        "pinName": "2.r",
+        "x": 601.6627903640069,
+        "y": -698.7869576816413
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "TN51",
+        "x": 598.0747270570023,
+        "y": -626.8655066943134
+      },
+      "color": "#22c55e"
+    },
+    {
+      "waypoints": [],
+      "id": "wire-1784048190288",
+      "start": {
+        "componentId": "pushbutton_1784042148457_oog1wumry",
+        "pinName": "1.l",
+        "x": 534.6627903640069,
+        "y": -717.7869576816413
+      },
+      "end": {
+        "componentId": "breadboard_full_1784042096514_z2h8wsdo8",
+        "pinName": "TP12",
+        "x": 223.67472705700223,
+        "y": -639.8655066943134
+      },
+      "color": "#22c55e"
+    }
+  ],
+  "activeBoardId": "esp32",
+  "ignoreStock": false
+}
